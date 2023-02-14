@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "ModernSans";
+    src: url("../public/fonts/modern_sans/ModernSans-Light.woff") format("woff"), url("../public/fonts/modern_sans/ModernSans-Light.otf") format("otf"), url("../public/fonts/modern_sans/ModernSans-Light.woff2") format("woff2");
+    font-style: normal;
+    font-weight: normal;
+};
+
+@font-face {
+    font-family: "Poppins";
+    src: url("../public/fonts/poppins/Poppins-Regular.otf") format("otf");
+    font-style: normal;
+    font-weight: normal;
+};
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("../public/fonts/monserrat/Montserrat-Regular.ttf") format("ttf");
+    font-style: normal;
+    font-weight: normal;
+};
+
+body{
+    font-family: Poppins;
+}
+.stroke, .btn-slide, .card-flip {
+    -webkit-text-stroke: 1px white;
+}
+
+table tbody tr:nth-child(odd) {
+	background: #fff;
+}
+table tbody tr:nth-child(even) {
+	background: rgb(231, 233, 236);
+}

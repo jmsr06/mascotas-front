@@ -140,6 +140,7 @@ const CrearPublicacion = () => {
     }
 
     async function handleSubmit(e) {
+        const fundacion = JSON.parse(localStorage.getItem('user')).fundacion
         e.preventDefault()
         const post = {
             id: mascota.id,
@@ -151,7 +152,7 @@ const CrearPublicacion = () => {
             size_id: size,
             edad_id: edad,
             ciudad_id: ciudad,
-            fundacion_id: "1",
+            fundacion_id: fundacion.id,
             estado_id: estado,
             imagenes: imagenes
         }
@@ -219,18 +220,6 @@ const CrearPublicacion = () => {
         default:
             break;
     }
-
-    // switch (path == 'editar-publicacion' && esterilizacion) {
-    //     case '1':
-    //         document.getElementById("esterilizacion_1").checked = true;
-    //         break;
-    //     case '2':
-    //         document.getElementById("esterilizacion_2").checked = true;
-    //         break;
-    //     default:
-    //         break;
-    // }
-
 
     if (path == 'editar-publicacion' && esterilizacion == 1) {
         document.getElementById("esterilizacion_1").checked = true;
@@ -325,7 +314,6 @@ const CrearPublicacion = () => {
                             type='radio'
                             className='mr-1'
                             value='2'
-                            // checked={path == 'editar-publicacion' && esterilizacion == 2 ? true : false}
                             onChange={event => setEsterilizacion(event.target.value)}
                         />Sí
                         <input id='esterilizacion_1'
@@ -333,7 +321,6 @@ const CrearPublicacion = () => {
                             type='radio'
                             className='ml-6 mr-1'
                             value='1'
-                            // checked={path == 'editar-publicacion' && esterilizacion == 1 ? true : false}
                             onChange={event => setEsterilizacion(event.target.value)}
                         />No
                     </div>

@@ -33,7 +33,7 @@ const Mascota = () => {
                     <p><span className='font-bold'>Teléfono: </span>{mascota.telefono}</p>
                     <span className='text-gray-500'><i className="fa-solid fa-location-dot"></i> {mascota.ciudad} </span>
                 </span>
-                <span className='capitalize'><span className='font-bold'>Edad:</span> 1 año</span>
+                <span className='capitalize'><span className='font-bold'>Edad:</span> {mascota.edad}</span>
                 <span className='capitalize'><span className='font-bold'>Tamaño:</span> {mascota.size}</span>
                 <span className='capitalize'><span className='font-bold'>Sexo:</span> {mascota.sexo == 'M' ? 'macho' : 'hembra'}</span>
                 <span className='capitalize'><span className='font-bold'>Esterilización:</span> {mascota.esterilizacion == '2' ? 'Sí' : 'No'}</span>

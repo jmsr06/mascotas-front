@@ -13,7 +13,6 @@ const MenuUser = ({ setMenuUser }) => {
         if (user != null) {
             setFundacion(user.fundacion)
         }
-        console.log(fundacion)
     }, [])
 
     const handleLogout = async () => {

@@ -15,11 +15,11 @@ export async function loader({ request, params }) {
         if (url.searchParams.get("page")) {
             parametros.page = url.searchParams.get("page")
         }
-        const response = await mascotasApi.get(`/fundacion/${fundacion}/mascotas`, {
+        const response = await mascotasApi.get(`/fundacion/mascotas`, {
             params: parametros
         })
         dataMascotas = response.data.data
-        dataMascotas.url = `/fundacion/${fundacion}/mascotas`
+        dataMascotas.url = `/fundacion/mascotas`
     } catch (error) {
         console.log(error)
     }
@@ -30,6 +30,7 @@ const MascotaView = () => {
     const { dataMascotas } = useLoaderData();
     const [mascotas, setMascotas] = useState(dataMascotas.results)
     const [paginador, setPaginador] = useState(dataMascotas.results)
+    const [filteredData, setFilteredData] = useState(dataMascotas.results)
 
     const [selectedOptionName, setSelectedOptionName] = useState('asc');
 
@@ -59,7 +60,7 @@ const MascotaView = () => {
     };
 
     // Ordenar los datos según la opción seleccionada
-    const sortedData = mascotas.sort((a, b) => {
+    filteredData.sort((a, b) => {
         if (selectedOptionName === 'asc') {
             return a.nombre.localeCompare(b.nombre);
         } else {
@@ -74,9 +75,15 @@ const MascotaView = () => {
     };
 
     // Filtrar los datos según filterValue
-    const filteredData = mascotas.filter((mascota) =>
-        mascota.nombre.includes(filterValue)
-    );
+    useEffect(() => {
+        const data = mascotas.filter((mascota) => {
+            if (filterValue != '') {
+                return mascota.nombre.includes(filterValue)
+            }
+            return true
+        })
+        setFilteredData(data)
+    }, [filterValue, mascotas])
 
     const deletePet = (id) => {
         swal({
@@ -113,9 +120,6 @@ const MascotaView = () => {
             }
         })
     }
-    const infoSexo = ['T: Todos los sexos', 'H: Sólo Hembras', 'M: Sólo Machos']
-    const infoEstado = ['T: Todos los estados', 'A: Mascotas en adopción', 'E: Mascotas encontradas', 'P: Mascotas perdidas']
-    const infoPublicacion = ['T: Todos los estados de la publicación', 'P: Publicadas', 'R: En revisión']
     return (
         <main className="mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-700">
             <div className='flex justify-end '>
@@ -124,20 +128,20 @@ const MascotaView = () => {
             <div className='flex justify-center items-center mt-10'>
                 <input value={filterValue} onChange={handleFilterChange} className='border-2  w-10/12 rounded-lg h-10 p-3' placeholder='Nombre de la mascota' />
             </div>
-            <div className='flex flex-col justify-center items-center mt-10 overflow-x-scroll whitespace-nowrap'>
-                <table className='border w-10/12 '>
+            <div className='flex flex-col justify-center items-center mt-10 overflow-x-auto whitespace-nowrap'>
+                <table className='border w-10/12 mb-3'>
                     <thead className='bg-gray-200 h-10'>
                         <tr >
                             <th >Imagen</th>
                             <th >Nombre {selectedOptionName == 'asc' ? <i onClick={handleOptionChange} className="fa-solid fa-arrow-down-a-z text-blue-700 cursor-pointer hover:text-blue-500"></i> : <i onClick={handleOptionChange} className="fa-solid fa-arrow-down-z-a text-blue-700 cursor-pointer hover:text-blue-500"></i>}</th>
                             <th >Sexo</th>
                             <th >Estado</th>
-                            <th >Publicación</th>
+                            {/* <th >Publicación</th> */}
                             <th >Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {
+                        {filteredData.length > 0 ?
                             filteredData.map((mascota) => (
                                 <tr key={mascota.id} className='h-32'>
                                     <td className='capitalize mt-2 flex justify-center items-center'>
@@ -152,9 +156,9 @@ const MascotaView = () => {
                                     <td className='capitalize text-center'>
                                         {mascota.estado_id == 1 ? 'Adopción' : (mascota.estado_id == 2 ? 'Perdido' : 'Encontrado')}
                                     </td>
-                                    <td className='capitalize text-center'>
+                                    {/* <td className='capitalize text-center'>
                                         {mascota.publicacion == 1 ? <span className='bg-green-200 text-xs font-bold px-2 py-1 rounded-full'>Publicado</span> : <span className='bg-red-200 text-xs font-bold px-2 py-1 rounded-full'>En revisión</span>}
-                                    </td>
+                                    </td> */}
                                     <td className='capitalize text-center'>
                                         <Link to={{
                                             pathname: `/editar-publicacion/${mascota.slug}`
@@ -162,10 +166,14 @@ const MascotaView = () => {
                                         <button onClick={() => deletePet(mascota.id)} className='bg-red-500 h-10 w-14 text-white rounded-lg hover:bg-red-400 cursor-pointer'><i className="fa-solid fa-trash-can"></i></button>
                                     </td>
                                 </tr>
-                            ))}
+                            )) :
+                            <tr>
+                                <td colSpan={6} className='text-center p-3'>No hay resultados</td>
+                            </tr>}
                     </tbody>
                 </table>
-                <Paginador paginas={dataMascotas.paginas} total={dataMascotas.total} setPage={setPage} page={page} perPage={dataMascotas.perPage} />
+                {dataMascotas.total > 0 && <Paginador paginas={dataMascotas.paginas} total={dataMascotas.total} setPage={setPage} page={page} perPage={dataMascotas.perPage} />
+                }
             </div>
         </main>
     )

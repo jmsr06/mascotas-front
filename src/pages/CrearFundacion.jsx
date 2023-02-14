@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useLoaderData } from 'react-router-dom';
 import mascotasApi from "../api/mascotasApi";
 import swal from 'sweetalert';
+import { useNavigate } from "react-router-dom";
 
 export async function loader({ request, params }) {
     let dataCiudades = []
@@ -22,6 +23,7 @@ export async function loader({ request, params }) {
 }
 
 const CrearFundacion = () => {
+    const navigate = useNavigate();
     const { fundacion, dataCiudades, path } = useLoaderData();
     const [ciudades, setCiudades] = useState(dataCiudades)
     const [nombre, setNombre] = useState('')
@@ -49,7 +51,7 @@ const CrearFundacion = () => {
             setCiudad(fundacion.ciudad_id)
         }
     }, [fundacion])
-    
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -65,6 +67,8 @@ const CrearFundacion = () => {
 
     async function handleSubmit(e) {
         e.preventDefault()
+        let usuario = localStorage.getItem('user')
+        usuario = JSON.parse(usuario)
         const post = {
             id: fundacion.id,
             nombre: nombre,
@@ -76,19 +80,21 @@ const CrearFundacion = () => {
             facebook: facebook,
             whatsapp: whatsapp,
             instagram: instagram,
-            user_id: "1",
+            user_id: usuario.id,
             ciudad_id: ciudad
         }
         if (path == 'editar-fundacion') {
             try {
                 const res = await mascotasApi.put(`/fundaciones/${fundacion.id}`, post)
+                usuario.fundacion = res.data.data
+                localStorage.setItem('user', JSON.stringify(usuario))
                 swal({
                     position: 'top-end',
                     icon: 'success',
                     title: 'La fundación ha sido modificada',
                     timer: 4500,
                 });
-                window.location.href = `/fundacion/${fundacion.slug}`;
+                navigate(`/fundacion/${fundacion.slug}`);
             } catch (error) {
                 console.log(error)
                 swal({
@@ -118,6 +124,7 @@ const CrearFundacion = () => {
                     title: 'La fundación ha sido creada',
                     timer: 4500,
                 });
+                navigate(`/fundacion/${usuario.fundacion.slug}`);
             } catch (error) {
                 console.log(error)
                 swal({

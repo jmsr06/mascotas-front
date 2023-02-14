@@ -14,6 +14,7 @@ export async function loader({ request, params }) {
         data = fundacion.data.data
     } catch (error) {
         console.log(error)
+        
     }
 
     if (!estado) {

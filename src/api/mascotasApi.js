@@ -9,8 +9,9 @@ const mascotasApi = axios.create({
 // Request interceptors for API calls
 mascotasApi.interceptors.request.use(
     (config) => {
-        const user = JSON.parse(localStorage.getItem('user') || '{}')
-        if (user) {
+        let user = localStorage.getItem('user')
+        if (user != null) {
+            user = JSON.parse(user)
             config.headers.Authorization = `Bearer ${user ? user.token : ''}`;
         }
         return config;
